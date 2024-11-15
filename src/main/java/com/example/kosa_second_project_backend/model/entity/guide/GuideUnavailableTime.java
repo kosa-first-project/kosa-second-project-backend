@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class guideUnavailableTime {
+public class GuideUnavailableTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int guideUnavailableTimeId;

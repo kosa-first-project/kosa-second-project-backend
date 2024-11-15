@@ -2,19 +2,17 @@ package com.example.kosa_second_project_backend.model.entity.guide;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDate;
+import lombok.*;
 
 
 @Entity
 @Getter
 @Setter
 @ToString
-public class guideInfo {
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Table(name = "guide_info")
+public class GuideInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int guideInfoId;
@@ -26,8 +24,9 @@ public class guideInfo {
     private int capacity;
     private String text;
     private int weekdayPrice;
-    private Integer boardRating; // decimal(10,2)
-    private Integer likeCount;
+    private Integer boardRating; // 후기평점 // decimal(10,2)
+    private Integer likeCount; // 좋아요수
+    private Integer hits; // 조회수
     private String guideInfoState; // 'activate','deactivate','delete'
 
 //    @CreationTimestamp//데이터를 insert할 때의 시간으로 입력됨

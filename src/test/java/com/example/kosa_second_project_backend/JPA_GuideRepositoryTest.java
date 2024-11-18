@@ -22,7 +22,7 @@ public class JPA_GuideRepositoryTest {
     // 테스트 전 데이터 삽입
     @BeforeEach
     void setupData() {
-        // guideRepository.deleteAll(); // 모든 데이터를 삭제
+         guideRepository.deleteAll(); // 모든 데이터를 삭제
 
         // 테스트용 데이터 삽입
         GuideInfo guide1 = new GuideInfo();
@@ -82,7 +82,7 @@ public class JPA_GuideRepositoryTest {
 
         guideRepository.findAll().forEach(guide -> System.out.println("Stored Guide: " + guide));
 
-        List<GuideInfo> list = guideRepository.findByUserIdContains("봇");
+        List<GuideInfo> list = guideRepository.findByUserIdContains("bot");
         list.forEach(System.out::println);
         Assertions.assertTrue(list.size() > 0); // '봇'을 포함한 userId가 있어야 함
     }

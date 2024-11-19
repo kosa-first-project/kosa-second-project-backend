@@ -4,8 +4,12 @@ package com.example.kosa_second_project_backend.controller;
 import com.example.kosa_second_project_backend.dto.JoinDTO;
 import com.example.kosa_second_project_backend.dto.LoginRequest;
 import com.example.kosa_second_project_backend.dto.MyUserDetails;
+import com.example.kosa_second_project_backend.entity.login.User;
 import com.example.kosa_second_project_backend.jwt.JWTUtil;
+import com.example.kosa_second_project_backend.repository.login.UserRepository;
 import com.example.kosa_second_project_backend.service.JoinService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +17,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
+@Slf4j
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization", allowCredentials = "true")
 public class AuthController {
     @Autowired
     private JoinService joinService;
@@ -26,6 +36,8 @@ public class AuthController {
 
     @Autowired
     private JWTUtil jwtUtil;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/join")
     public ResponseEntity<String> CreateUser(@RequestBody JoinDTO joinDTO) {
@@ -38,7 +50,7 @@ public class AuthController {
         }
     }
 
-     @PostMapping("/login")
+   /*@PostMapping("/login")
      public ResponseEntity<String> LoginUser(@RequestBody LoginRequest loginRequest) {
         System.out.println("login success");
 
@@ -62,9 +74,26 @@ public class AuthController {
          // JWT 생성
          String token = jwtUtil.createJwt(userDetails.getUsername(), userDetails.getAuthorities().iterator().next().getAuthority(), 1000 * 60 * 60 * 10L);
 
+         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+
+         header.add("Authorization", token);
+
          System.out.println("Generated Token: " + token);
 
          // JWT를 ResponseEntity로 반환
-         return ResponseEntity.ok("Bearer " + token);
-     }
+         return ResponseEntity.ok("Bearer " + header);
+     }*/
+   /* @PostMapping("login")
+    public ResponseEntity<String> Login(@RequestBody Map<String, String> params, HttpServletRequest request) {
+        System.out.println("login success");
+
+        User user = userRepository.findByUsernameAndPassword(params.get("username"), params.get("password"));
+
+        log.info("login 실행");
+
+        if(user != null) {
+            Long id = user.getId();
+
+        }
+    } */
 }

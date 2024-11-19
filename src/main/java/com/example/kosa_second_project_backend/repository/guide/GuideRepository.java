@@ -1,6 +1,6 @@
 package com.example.kosa_second_project_backend.repository.guide;
 
-import com.example.kosa_second_project_backend.model.entity.guide.GuideInfo;
+import com.example.kosa_second_project_backend.entity.guide.GuideInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

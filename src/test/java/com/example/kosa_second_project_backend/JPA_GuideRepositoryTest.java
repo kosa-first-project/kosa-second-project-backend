@@ -1,6 +1,6 @@
 package com.example.kosa_second_project_backend;
 
-import com.example.kosa_second_project_backend.model.entity.guide.GuideInfo;
+import com.example.kosa_second_project_backend.entity.guide.GuideInfo;
 import com.example.kosa_second_project_backend.repository.guide.GuideRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

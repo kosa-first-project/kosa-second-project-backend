@@ -1,4 +1,4 @@
-package com.example.kosa_second_project_backend.model.entity.guide;
+package com.example.kosa_second_project_backend.entity.guide;
 
 
 import jakarta.persistence.Entity;

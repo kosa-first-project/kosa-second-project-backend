@@ -25,6 +25,7 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
 
+
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
         this.authenticationConfiguration = authenticationConfiguration;

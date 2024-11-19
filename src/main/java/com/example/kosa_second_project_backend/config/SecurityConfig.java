@@ -52,7 +52,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/main","/auth/join", "/auth/login").permitAll()  // 회원가입과 로그인은 인증 없이 접근 허용
+                        .requestMatchers("/**").permitAll()  // 회원가입과 로그인은 인증 없이 접근 허용
                         .requestMatchers("/admin").hasAuthority("admin")
                         .anyRequest().authenticated()// 나머지 요청은 인증 필요
                 )

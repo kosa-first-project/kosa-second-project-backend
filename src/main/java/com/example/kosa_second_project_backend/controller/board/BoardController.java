@@ -5,12 +5,12 @@ import com.example.kosa_second_project_backend.dto.board.BoardDto;
 import com.example.kosa_second_project_backend.dto.board.BoardEditDto;
 import com.example.kosa_second_project_backend.dto.board.BoardListsDto;
 import com.example.kosa_second_project_backend.service.board.BoardService;
-import com.example.kosa_second_project_backend.service.board.BoardService;
 import com.example.kosa_second_project_backend.service.board.ImageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -53,8 +53,9 @@ public class BoardController {
     }
     //게시글 검색
     @GetMapping()
-    public ResponseEntity<List<BoardListsDto>> findLists(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-                                                         @PageableDefault(size = 5, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<BoardListsDto>> findLists(
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+            @PageableDefault(size = 5, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable) {
         if (keyword.isEmpty()) {
             return ResponseEntity.ok()
                     .body(boardService.findPost(pageable));

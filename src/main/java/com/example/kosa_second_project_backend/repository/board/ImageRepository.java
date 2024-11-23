@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
+
+    // 특정 게시글에 첨부된 모든 이미지를 조회한다.
     List<Image> findAllByBoard_BoardId(Long boardId);
 }

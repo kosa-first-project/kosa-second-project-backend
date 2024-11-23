@@ -11,10 +11,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class) // 스프링 시큐리티 의존성 무시
 @EnableJpaRepositories(basePackages = {"com.example.kosa_second_project_backend.repository"})
 @EntityScan(basePackages = {"com.example.kosa_second_project_backend.entity"})
-@EnableJpaAuditing // Time 클래스 상속받기 위함
+@EnableJpaAuditing // Spring Data JPA의 감사 기능을 활성화
 public class KosaSecondProjectBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(KosaSecondProjectBackendApplication.class, args);
     }
-
 }

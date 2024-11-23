@@ -22,6 +22,7 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .nickname(commentDto.getNickname())
+                .password(commentDto.getPassword())
                 .content(commentDto.getContent())
                 .hearts(0)
                 .board(board)
@@ -38,21 +39,21 @@ public class CommentService {
         if (comment.getBoard().getBoardId() != boardId) {
             throw new IllegalStateException("잘못된 경로입니다.");
         }
-
-            commentRepository.updateComment(commentId, commentEditDto.getContent());
+        if (!comment.getPassword().equals(commentEditDto.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        commentRepository.updateComment(commentId, commentEditDto.getContent());
 
     }
 
     @Transactional
-    public void deleteComment(Long boardId, Long commentId, String password) {
-        boardRepository.findById(boardId).orElseThrow(() -> new IllegalStateException("페이지가 존재하지 않습니다."));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalStateException("댓글이 존재하지 않습니다."));
+    public void deleteComment(Long boardId, Long commentId) {
+        boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalStateException("페이지가 존재하지 않습니다."));
+        commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalStateException("댓글이 존재하지 않습니다."));
 
-        if (comment.getBoard().getBoardId() != boardId) {
-            throw new IllegalStateException("잘못된 경로입니다.");
-        }
         commentRepository.deleteById(commentId);
-
     }
 
     @Transactional
@@ -65,4 +66,5 @@ public class CommentService {
         }
         commentRepository.updateHeartCount(commentId);
     }
+
 }

@@ -10,21 +10,21 @@ import lombok.*;
 @Setter
 @ToString
 public class CommentDto {
+    private Long commentId; // commentId 필드 추가
     @NotBlank(message = "닉네임을 입력하세요.")
-    @Size(min = 3, max = 10, message = "닉네임은 3자 이상, 10자 이하만 가능합니다.")
+    @Size(min = 1, max = 20, message = "닉네임은 1자 이상, 20자 이하만 가능합니다.")
     private String nickname;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}",
-            message = "비밀번호는 영문, 숫자, 특수기호가 적어도 1개 이상씩 포함된 8~20자만 가능합니다.")
     private String password;
 
     @NotBlank(message = "내용을 입력하세요.")
-    @Size(min = 3, max = 100, message = "내용은 3자 이상 100자 이하만 가능합니다.")
+    @Size(min = 1, max = 100, message = "내용은 1자 이상 100자 이하만 가능합니다.")
     private String content;
 
     @Builder
-    public CommentDto(String nickname, String password, String content) {
+    public CommentDto(Long commentId, String nickname, String password, String content) {
+        this.commentId = commentId;
         this.nickname = nickname;
         this.password = password;
         this.content = content;

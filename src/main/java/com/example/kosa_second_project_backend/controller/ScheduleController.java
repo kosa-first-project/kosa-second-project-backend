@@ -1,10 +1,12 @@
 package com.example.kosa_second_project_backend.controller;
 
+import com.example.kosa_second_project_backend.dto.UpdateScheduleRequest;
 import com.example.kosa_second_project_backend.entity.ScheduleEntity;
 import com.example.kosa_second_project_backend.repository.schedule.ScheduleRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +42,15 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleList, HttpStatus.OK);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<List<ScheduleEntity>> findById(@PathVariable Long id) {
+        List<ScheduleEntity> scheduleList = repository.findScheduleEntitiesById(id);
+        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
+    }
+
     // Create a new schedule
     @PostMapping("/create")
     public ResponseEntity<ScheduleEntity> createSchedule(
-            @RequestParam("user_id") String user_id, // Demo code for test
             @RequestParam("destination") String destination,
             @RequestParam("travel_start_date") String startDate,
             @RequestParam("travel_start_time") String startTime,
@@ -62,46 +69,37 @@ public class ScheduleController {
 //        if (user_id == null) {
 //            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 //        }
-
+        String user_id="123";
         ScheduleEntity schedule = new ScheduleEntity(user_id ,title, destination, startDateTime, endDateTime, comment);
         repository.save(schedule);
 
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<ScheduleEntity> updateSchedule(
             @PathVariable int id,
-            @RequestParam("destination") String destination,
-            @RequestParam("travel_start_date") String startDate,
-            @RequestParam("travel_start_time") String startTime,
-            @RequestParam("travel_end_date") String endDate,
-            @RequestParam("travel_end_time") String endTime,
-            @RequestParam(required = false) String comment,
-            @RequestParam("title") String title,
-            HttpServletRequest request) throws Exception {
+            @RequestBody UpdateScheduleRequest request,
+            HttpServletRequest httpRequest) throws Exception {
+
+        System.out.println("Received update request: " + request);
 
         Optional<ScheduleEntity> existingScheduleOpt = repository.findById(id);
         if (existingScheduleOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        HttpSession session = request.getSession();
-        String user_id = (String)session.getAttribute("user_id");
-        if (user_id == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date startDateTime = dateTimeFormat.parse(startDate + " " + startTime);
-        Date endDateTime = dateTimeFormat.parse(endDate + " " + endTime);
+        Date startDateTime = dateTimeFormat.parse(request.getTravel_start_date() + " " + request.getTravel_start_time());
+        Date endDateTime = dateTimeFormat.parse(request.getTravel_end_date() + " " + request.getTravel_end_time());
 
         ScheduleEntity existingSchedule = existingScheduleOpt.get();
-        existingSchedule.setTitle(title);
-        existingSchedule.setDestination(destination);
+        existingSchedule.setUser_id("123"); // 실제 사용자 ID로 대체 필요
+        existingSchedule.setTitle(request.getTitle());
+        existingSchedule.setDestination(request.getDestination());
         existingSchedule.setStartDateTime(startDateTime);
         existingSchedule.setEndDateTime(endDateTime);
-        existingSchedule.setComment(comment);
+        existingSchedule.setComment(request.getComment());
 
         ScheduleEntity updatedSchedule = repository.save(existingSchedule);
         return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);

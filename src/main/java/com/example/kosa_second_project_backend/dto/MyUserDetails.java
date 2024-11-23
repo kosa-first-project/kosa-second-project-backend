@@ -32,6 +32,10 @@ public class MyUserDetails implements UserDetails {
         return collection;
     }
 
+    public String getUserId() {
+        return user.getUserId();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword(); // 비밀번호 반환

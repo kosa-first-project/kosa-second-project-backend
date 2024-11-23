@@ -47,7 +47,7 @@ public class User{
 
     // 회원가입 일 및 시간
     private LocalDateTime createDate;
-    
+
     // 사용자와 관리자 구분
     private String roles;
 }

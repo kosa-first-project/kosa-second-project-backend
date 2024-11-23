@@ -1,9 +1,9 @@
 package com.example.kosa_second_project_backend.service.board;
 
+import com.example.kosa_second_project_backend.dto.board.*;
 import com.example.kosa_second_project_backend.entity.board.Board;
 import com.example.kosa_second_project_backend.entity.board.Comment;
 import com.example.kosa_second_project_backend.entity.board.Image;
-import com.example.kosa_second_project_backend.dto.board.*;
 import com.example.kosa_second_project_backend.repository.board.BoardRepository;
 import com.example.kosa_second_project_backend.repository.board.CommentRepository;
 import com.example.kosa_second_project_backend.repository.board.ImageRepository;
@@ -37,21 +37,18 @@ public class BoardService {
         return boardRepository.save(board).getBoardId();
     }
 
-    // 게시글 찾기
-    public List<BoardListsDto> findPost(Pageable pageable) {
+    public Page<BoardListsDto> findPost(Pageable pageable) {
         Page<Board> boards = boardRepository.findAll(pageable);
-        List<BoardListsDto> boardListsDtos = new ArrayList<>();
 
-        for (Board board : boards) {
-            boardListsDtos.add(BoardListsDto.builder()
-                    .boardId(board.getBoardId())
-                    .title(board.getTitle())
-                    .commentCount(commentRepository.countByBoard_BoardId(board.getBoardId()))
-                    .nickname(board.getNickname())
-                    .views(board.getViews())
-                    .createDate(board.getCreateDate())
-                    .build());
-        }
+        Page<BoardListsDto> boardListsDtos = boards.map(board -> BoardListsDto.builder()
+                .boardId(board.getBoardId())
+                .title(board.getTitle())
+                .commentCount(commentRepository.countByBoard_BoardId(board.getBoardId()))
+                .nickname(board.getNickname())
+                .views(board.getViews())
+                .createDate(board.getCreateDate())
+                .build());
+
         return boardListsDtos;
     }
 
@@ -79,7 +76,10 @@ public class BoardService {
         List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId, pageable);
         List<CommentDetailsDto> commentDetailsDtos = new ArrayList<>();
         for (Comment comment : comments) {
+            System.out.println(comment);
             commentDetailsDtos.add(CommentDetailsDto.builder()
+                    .commentId(comment.getCommentId()) // commentId 추가
+                    .password(comment.getPassword()) // password 추가
                     .nickname(comment.getNickname())
                     .content(comment.getContent())
                     .hearts(comment.getHearts())
@@ -99,70 +99,20 @@ public class BoardService {
                 .build();
     }
 
-
-//    // 개별 게시글 찾기
-//    @Transactional
-//    public BoardDetailsDto findPostDetails(Long boardId, Pageable pageable) {
-//        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalStateException("페이지가 존재하지 않습니다."));
-//
-//        boardRepository.save(Board.builder()
-//                .boardId(boardId)
-//                .nickname(board.getNickname())
-//                .password(board.getPassword())
-//                .title(board.getTitle())
-//                .content(board.getContent())
-//                .views(board.getViews() + 1)
-//                .build());
-//
-//        List<Image> images = imageRepository.findAllByBoard_BoardId(boardId);
-//        List<ImageDetailsDto> imageDetailsDtos = new ArrayList<>();
-//
-//        List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId, pageable);
-//        List<CommentDetailsDto> commentDetailsDtos = new ArrayList<>();
-//
-//        for (Image image : images) {
-//            imageDetailsDtos.add(ImageDetailsDto.builder()
-//                    .originName(image.getOriginName())
-//                    .saveName(image.getSaveName())
-//                    .imagePath(image.getImagePath())
-//                    .imageSize(image.getImageSize())
-//                    .build());
-//        }
-//
-//        for (Comment comment : comments) {
-//            commentDetailsDtos.add(CommentDetailsDto.builder()
-//                    .nickname(comment.getNickname())
-//                    .content(comment.getContent())
-//                    .hearts(comment.getHearts())
-//                    .createDate(comment.getCreateDate())
-//                    .build());
-//        }
-//
-//        return BoardDetailsDto.builder()
-//                .nickname(board.getNickname())
-//                .views(board.getViews() + 1)
-//                .createDate(board.getCreateDate())
-//                .title(board.getTitle())
-//                .content(board.getContent())
-//                .images(imageDetailsDtos)
-//                .comments(commentDetailsDtos)
-//                .build();
-//    }
-
     // 삭제
     @Transactional
     public void deletePost(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalStateException("페이지가 존재하지 않습니다."));
 
-            List<Image> images = imageRepository.findAllByBoard_BoardId(boardId);
-            List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId);
+        List<Image> images = imageRepository.findAllByBoard_BoardId(boardId);
+        List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId);
 
 //            for (Image image : images) {
 //                imageService.deleteImage(image);
 //            }
-            imageRepository.deleteAll(images);
-            commentRepository.deleteAll(comments);
-            boardRepository.delete(board);
+        imageRepository.deleteAll(images);
+        commentRepository.deleteAll(comments);
+        boardRepository.delete(board);
     }
 
     // 수정
@@ -170,32 +120,29 @@ public class BoardService {
     public void updatePost(Long boardId, BoardEditDto boardEditDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalStateException("페이지가 존재하지 않습니다."));
 
-            boardRepository.save(Board.builder()
-                    .boardId(boardId)
-                    .nickname(board.getNickname())
-                    .password(board.getPassword())
-                    .title(boardEditDto.getTitle())
-                    .content(boardEditDto.getContent())
-                    .views(board.getViews())
-                    .build());
+        boardRepository.save(Board.builder()
+                .boardId(boardId)
+                .nickname(board.getNickname())
+                .password(board.getPassword())
+                .title(boardEditDto.getTitle())
+                .content(boardEditDto.getContent())
+                .views(board.getViews())
+                .build());
     }
 
     // 검색
-    public List<BoardListsDto> searchPosts(String keyword, Pageable pageable) {
-        List<Board> boards = boardRepository.findByTitleContaining(keyword, pageable);
-        List<BoardListsDto> boardListsDtos = new ArrayList<>();
+    public Page<BoardListsDto> searchPosts(String keyword, Pageable pageable) {
+        Page<Board> boards = boardRepository.findByTitleContaining(keyword, pageable);
 
-        for (Board board : boards) {
-            BoardListsDto boardListsDto = BoardListsDto.builder()
-                    .boardId(board.getBoardId())
-                    .title(board.getTitle())
-                    .commentCount(commentRepository.countByBoard_BoardId(board.getBoardId()))
-                    .nickname(board.getNickname())
-                    .views(board.getViews())
-                    .createDate(board.getCreateDate())
-                    .build();
-            boardListsDtos.add(boardListsDto);
-        }
+        Page<BoardListsDto> boardListsDtos = boards.map(board -> BoardListsDto.builder()
+                .boardId(board.getBoardId())
+                .title(board.getTitle())
+                .commentCount(commentRepository.countByBoard_BoardId(board.getBoardId()))
+                .nickname(board.getNickname())
+                .views(board.getViews())
+                .createDate(board.getCreateDate())
+                .build());
+
         return boardListsDtos;
     }
 }

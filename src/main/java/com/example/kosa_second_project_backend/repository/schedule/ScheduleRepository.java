@@ -11,5 +11,7 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Integer> {
     List<ScheduleEntity> findAll(); // List all schedules
     List<ScheduleEntity> findByTitle(String title);
+    List<ScheduleEntity> findScheduleEntitiesById(Long id);
+    void deleteByTitle(String title);
 //    List<ScheduleEntity> searchAllBy(String keyword);
 }

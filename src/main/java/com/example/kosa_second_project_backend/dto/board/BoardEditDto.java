@@ -13,11 +13,11 @@ public class BoardEditDto {
     private String password;
 
     @NotBlank(message = "제목을 입력하세요.")
-    @Size(min = 2, max = 30, message = "제목은 2자 이상, 30자 이하만 가능합니다.")
+    @Size(min = 1, max = 30, message = "제목은 2자 이상, 30자 이하만 가능합니다.")
     private String title;
 
     @NotBlank(message = "내용을 입력하세요.")
-    @Size(min = 10, message = "내용은 10자 이상 입력해야 합니다.")
+    @Size(min = 5, message = "내용은 5자 이상 입력해야 합니다.")
     private String content;
 
     @Builder

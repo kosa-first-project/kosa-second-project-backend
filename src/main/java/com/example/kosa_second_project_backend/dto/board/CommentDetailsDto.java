@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class CommentDetailsDto {
+    private Long commentId; // commentId 필드 추가
     private String nickname;
+    private String password;
     private String content;
     private Integer hearts;
 
@@ -18,7 +20,9 @@ public class CommentDetailsDto {
     private LocalDateTime createDate;
 
     @Builder
-    public CommentDetailsDto(String nickname, String content, Integer hearts, LocalDateTime createDate) {
+    public CommentDetailsDto(Long commentId, String password, String nickname, String content, Integer hearts, LocalDateTime createDate) {
+        this.commentId = commentId;
+        this.password = password;
         this.nickname = nickname;
         this.content = content;
         this.hearts = hearts;

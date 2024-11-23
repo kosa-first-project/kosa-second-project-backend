@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*")  // CORS 설정 추가
+//@CrossOrigin(origins = "*")  // CORS 설정 추가
 @RestController  // JSON 반환
 @RequestMapping("/api/guides")  // API URL 패턴 지정
 public class GuideController {
